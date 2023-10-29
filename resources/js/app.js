@@ -21,7 +21,7 @@ import App from './App.vue';
 import ListRooms from './features/rooms/pages/ListRooms.vue';
 
 const router = createRouter({
-    history: createWebHistory(),
+	history: createWebHistory('/app'),
     routes: [
         { path: '/rooms', component: ListRooms },
     ],
