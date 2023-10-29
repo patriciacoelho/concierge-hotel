@@ -15,6 +15,11 @@ class RoomCollection extends ResourceCollection
             'type' => $room->type,
             'total' => $room->total,
             'hotel' => $room->hotel,
+            'prices' => optional($room->prices)->only([
+                'id',
+                'date',
+                'value',
+            ]),
         ]);
     }
 }

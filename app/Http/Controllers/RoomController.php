@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IndexRoomRequest;
 use App\Http\Requests\StoreRoomRequest;
 use App\Http\Requests\UpdateRoomRequest;
 use App\Http\Resources\RoomCollection;
 use App\Http\Resources\RoomResource;
+use App\Models\Hotel;
+use App\Models\Price;
 use App\Models\Room;
 use Illuminate\Http\JsonResponse;
 
@@ -14,9 +17,34 @@ class RoomController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): RoomCollection
+    public function index(Room $rooms, IndexRoomRequest $request): RoomCollection
     {
-        $rooms = Room::paginate(30);
+        if ($request->hotel_id) {
+            $hotel = Hotel::find();
+        }
+
+        $rooms = $rooms
+            ->when(
+                $request->has('hotel_id'),
+                fn ($query) => $query->where('hotel_id', $hotel->id)
+            )
+            ->when(
+                $request->has('total'),
+                fn ($query) => $query->where('total', '>=', $request->total)
+            )
+            ->with('hotel')
+            ->get();
+
+        $rooms->each(
+            function ($room, $key) use ($rooms, $request) {
+                $final_date = $request->final_date ?? $request->initial_date;
+                $prices = Price::where('room_id', $room->id)
+                    ->whereBetween('date', [$request->initial_date, $final_date])
+                    ->orderBy('date')
+                    ->get();
+                $rooms[$key]->prices = $prices;
+            }
+        );
 
         return RoomCollection::make($rooms);
     }

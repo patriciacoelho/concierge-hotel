@@ -21,13 +21,18 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::apiResource('hotels', HotelController::class)
+    ->only(['index']);
+Route::apiResource('rooms', RoomController::class)
+    ->only(['index']);
+
 Route::middleware('auth')->group(function () {
     Route::apiResource('hotels', HotelController::class)
-        ->except(['create', 'edit']);
+        ->except(['index', 'create', 'edit']);
     Route::apiResource('rooms', RoomController::class)
-        ->except(['create', 'edit']);
+        ->except(['index', 'create', 'edit']);
     Route::apiResource('prices', PriceController::class)
-        ->except(['create', 'edit']);
+        ->except(['index', 'create', 'edit']);
 });
 
 require __DIR__.'/auth.php';
