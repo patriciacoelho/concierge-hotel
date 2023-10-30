@@ -11,15 +11,10 @@ class RoomCollection extends ResourceCollection
     public function toArray($request)
     {
         return $this->resource->transform(fn (RoomResource $room) => [
-            'id' => $room->id,
-            'type' => $room->type,
-            'total' => $room->total,
-            'hotel' => $room->hotel,
-            'prices' => optional($room->prices)->only([
-                'id',
-                'date',
-                'value',
-            ]),
+            'id' => $room['id'],
+            'type' => $room['type'],
+            'total' => $room['total'],
+            'prices' => $room['prices'],
         ]);
     }
 }

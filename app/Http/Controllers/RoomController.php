@@ -17,10 +17,10 @@ class RoomController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Room $rooms, IndexRoomRequest $request): RoomCollection
+    public function index(Room $rooms, IndexRoomRequest $request): JsonResponse
     {
         if ($request->hotel_id) {
-            $hotel = Hotel::find();
+            $hotel = Hotel::find($request->hotel_id);
         }
 
         $rooms = $rooms
@@ -32,21 +32,31 @@ class RoomController extends Controller
                 $request->has('total'),
                 fn ($query) => $query->where('total', '>=', $request->total)
             )
-            ->with('hotel')
             ->get();
 
+        $available_rooms = collect();
         $rooms->each(
-            function ($room, $key) use ($rooms, $request) {
+            function ($room, $key) use ($available_rooms, $request) {
                 $final_date = $request->final_date ?? $request->initial_date;
                 $prices = Price::where('room_id', $room->id)
                     ->whereBetween('date', [$request->initial_date, $final_date])
                     ->orderBy('date')
                     ->get();
-                $rooms[$key]->prices = $prices;
+
+                if ($prices) {
+                    $available_rooms->push([
+                        ...$room->toArray(),
+                        'prices' => $prices, 
+                    ]);
+                }
             }
         );
 
-        return RoomCollection::make($rooms);
+
+        return response()->json([
+            'hotel' => $hotel->toArray(),
+            'rooms' => RoomCollection::make($available_rooms),
+        ]);
     }
 
     /**

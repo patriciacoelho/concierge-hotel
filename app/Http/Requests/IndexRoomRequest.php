@@ -17,7 +17,7 @@ class IndexRoomRequest extends FormRequest
             'hotel_id' => ['string', 'exists:hotels,id', 'required'],
             'initial_date' => ['date_format:Y-m-d', 'required'],
             'final_date' => ['date_format:Y-m-d', 'after_or_equal:initial_date'],
-            'total' => ['integer', 'required'],
+            'total' => ['integer'],
         ];
     }
 }
