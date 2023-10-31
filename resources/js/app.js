@@ -18,12 +18,12 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import { aliases, md } from 'vuetify/iconsets/md';
 
 import App from './App.vue';
-import ListRooms from './features/rooms/pages/ListRooms.vue';
+import RoomsRoutes from './features/rooms/routes';
 
 const router = createRouter({
 	history: createWebHistory('/app'),
     routes: [
-        { path: '/rooms', component: ListRooms },
+        ...RoomsRoutes,
     ],
 });
 
