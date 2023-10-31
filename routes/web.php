@@ -22,13 +22,13 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::apiResource('hotels', HotelController::class)
-    ->only(['index']);
+    ->only(['index', 'show']);
 Route::apiResource('rooms', RoomController::class)
     ->only(['index']);
 
 Route::middleware('auth')->group(function () {
     Route::apiResource('hotels', HotelController::class)
-        ->except(['index', 'create', 'edit']);
+        ->only(['store', 'update', 'destroy']);
     Route::apiResource('rooms', RoomController::class)
         ->except(['index', 'create', 'edit']);
     Route::apiResource('prices', PriceController::class)
@@ -36,6 +36,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Frontend routes without auth
+Route::prefix('app')->group(function () {
+    Route::get('/rooms', fn () => view('app'));
+});
 
 Route::get(
     '{any}',
