@@ -1,14 +1,20 @@
 <script setup>
-import { DateTime } from 'luxon';
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 
-const hotels = ref([]);
+const props = defineProps({
+    hotels: {
+        type: Array,
+        default: () => ([]),
+        required: true,
+    },
+});
+
+const emit = defineEmits(['submit']);
+
 const hotel_id = ref(null);
 const totalFilter = ref(1);
 const initial_date = ref(null);
 const final_date = ref(null);
-const rooms = ref([]);
-const hotel = ref({});
 
 const required = [
     value => {
@@ -18,22 +24,7 @@ const required = [
     },
 ];
 
-const formatDate = (date) => {
-    return DateTime.fromSQL(date).toFormat('dd/MM/yyyy');
-};
-
-const getHotels = (params) => axios.get('/hotels', { params })
-    .then(({ data }) => {
-        hotels.value = data.hotels;
-    });
-
-const getRoomsByHotel = (params) => axios.get('/rooms', { params })
-    .then(({ data }) => {
-        rooms.value = data.rooms;
-        hotel.value = data.hotel;
-    });
-
-const handleSearchSubmit = () => {
+const handleFiltersSubmit = () => {
     const payload = {
         hotel_id: hotel_id.value,
         initial_date: initial_date.value,
@@ -41,21 +32,12 @@ const handleSearchSubmit = () => {
         total: totalFilter.value,
     };
 
-    getRoomsByHotel(payload);
+    emit('submit', payload);
 };
-
-onMounted(() => {
-    getHotels();
-    getRoomsByHotel({ hotel_id: 5, initial_date: '2023-11-29', final_date: '2023-11-30' });
-});
 </script>
 
 <template>
-    <div class="mt-4 mb-6">
-        <h4 class="text-h4 text-blue-grey-darken-4">Rooms List</h4>
-        <p class="text-subtitle-1 text-blue-grey-darken-1">Search rooms available for hotel in a specific date or interval</p>
-    </div>
-    <v-form @submit.prevent="handleSearchSubmit">
+    <v-form @submit.prevent="handleFiltersSubmit">
         <v-row no-gutters>
             <v-col
                 cols="12"
@@ -136,41 +118,4 @@ onMounted(() => {
             </v-col>
         </v-row>
     </v-form>
-
-    <v-card
-        max-width="600"
-        :title="hotel.name"
-        :subtitle="hotel.location"
-    >
-        <v-list
-            v-for="(room, index) in rooms"
-            :key="index"
-        >
-            <v-list-subheader>
-                <v-chip
-                    class="ma-2"
-                    color="primary"
-                    text-color="white"
-                >
-                    {{ room.type }} room
-                </v-chip>
-            </v-list-subheader>
-
-            <v-list-item
-                v-for="price in room.prices"
-                :key="price.date"
-                :value="price"
-                color="primary"
-                variant="plain"
-            >
-                <v-list-item-title class="ml-4">
-                    {{ formatDate(price.date) }}
-                </v-list-item-title>
-
-                <template v-slot:append>
-                    <span>$ {{ price.value }}</span>
-                </template>
-            </v-list-item>
-        </v-list>
-    </v-card>
 </template>

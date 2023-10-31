@@ -1,11 +1,11 @@
-import ListRooms from '../pages/ListRooms.vue';
+import ListPage from '../pages/ListPage.vue';
 
 export const routes = [
 	{
 		label: 'Rooms',
 		name: 'rooms',
 		path: '/rooms',
-		component: ListRooms,
+		component: ListPage,
 		meta: {
 			description: 'Rooms',
 		},
