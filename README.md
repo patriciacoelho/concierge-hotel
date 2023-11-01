@@ -36,6 +36,9 @@ sail npm run dev
 
 - Open `http://localhost/` in a web browser to see it
 
+
+P.S.: To easily test the application you can run seeders `sail artisan db:seed` than on the web UI set filter "Check-in" to 30 days from now. You can also run factories or add prices, rooms and hotels by API.  
+
 ## License
 
 This project is an open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
