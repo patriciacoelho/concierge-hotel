@@ -34,6 +34,8 @@ and paste the follow code (change `<YOUR-PASSWORD>` for whatever you want, such 
 sail npm run dev
 ```
 
+- Open `http://localhost/` in a web browser to see it
+
 ## License
 
 This project is an open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

@@ -39,7 +39,16 @@ require __DIR__.'/auth.php';
 
 // Frontend routes without auth
 Route::prefix('app')->group(function () {
-    Route::get('/rooms', fn () => view('app'));
+    Route::get('/rooms', fn () => view('app'))
+        ->name('app.rooms');
+});
+
+Route::get('/', function () {
+    return redirect('/app/rooms');
+});
+
+Route::get('/lp', function () {
+    return view('welcome');
 });
 
 Route::get(
