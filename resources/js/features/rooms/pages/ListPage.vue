@@ -28,7 +28,6 @@ const getRoomsByHotel = (params) => {
 
 onMounted(() => {
     getHotels();
-    getRoomsByHotel({ hotel_id: 5, initial_date: '2023-11-29', final_date: '2023-11-30' });
 });
 </script>
 

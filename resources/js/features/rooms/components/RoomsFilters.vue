@@ -32,7 +32,9 @@ const handleFiltersSubmit = () => {
         total: totalFilter.value,
     };
 
-    emit('submit', payload);
+    if (hotel_id.value && initial_date.value) {
+        emit('submit', payload);
+    }
 };
 </script>
 
