@@ -43,7 +43,7 @@ class RoomController extends Controller
                     ->orderBy('date')
                     ->get();
 
-                if ($prices) {
+                if (!empty($prices->toArray())) {
                     $available_rooms->push([
                         ...$room->toArray(),
                         'prices' => $prices, 
